@@ -1,0 +1,5 @@
+sensor_msgs/Image robot_view
+---
+string detection_results
+int32[] bounding_boxes_pixels
+
