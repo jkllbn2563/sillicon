@@ -28,9 +28,6 @@ if StrictVersion(tf.__version__) < StrictVersion('1.9.0'):
   raise ImportError('Please upgrade your TensorFlow installation to v1.9.* or later!')
 
 
-
-
-
 def load_image_into_numpy_array(image):
   (im_width, im_height) = image.size
   return np.array(image.getdata()).reshape(
@@ -106,6 +103,7 @@ def handle_function(req):
 	#filtered_banana_dict = {'detection_boxes':[],'detection_classes':[],'detection_scores':[]}
 	#filtered_mouse_dict = {'detection_boxes':[],'detection_classes':[],'detection_scores':[]}
 	#filtered_bottle_dict = {'detection_boxes':[],'detection_classes':[],'detection_scores':[]}
+	"""
 	for i in range(len(output_dict['detection_classes'])):
 	  if (output_dict['detection_classes'][i]==52):
 	      #filtered_banana_dict['detection_boxes'].append(output_dict['detection_boxes'][i])
@@ -136,7 +134,7 @@ def handle_function(req):
 	      filtered_dict['detection_scores'].append(output_dict['detection_scores'][i])
 	      break                      
 
-
+	"""
 	filtered_dict['detection_boxes'] = np.array(filtered_dict['detection_boxes'])
 	#filtered_banana_dict['detection_boxes'] = np.array(filtered_banana_dict['detection_boxes'])
 	#filtered_mouse_dict['detection_boxes'] = np.array(filtered_mouse_dict['detection_boxes'])
@@ -147,51 +145,54 @@ def handle_function(req):
 	filtered_dict['detection_scores'] = np.array(filtered_dict['detection_scores'])
 	# Visualization of the results of a detection.
 	image_copy = np.copy(image_np)##It is amazing for me
-
+	
 	vis_util.visualize_boxes_and_labels_on_image_array(
 	  image_copy,
-	  #output_dict['detection_boxes'],
-	  #output_dict['detection_classes'],
-	  #output_dict['detection_scores'],
-	  filtered_dict['detection_boxes'],
-	  filtered_dict['detection_classes'],
-	  filtered_dict['detection_scores'],
+	  output_dict['detection_boxes'],
+	  output_dict['detection_classes'],
+	  output_dict['detection_scores'],
+	  #filtered_dict['detection_boxes'],
+	  #filtered_dict['detection_classes'],
+	  #filtered_dict['detection_scores'],
 	  category_index,
 	  instance_masks=output_dict.get('detection_masks'),
 	  use_normalized_coordinates=True,
-	  min_score_thresh=.0,
+	  min_score_thresh=0.1,
 	  line_thickness=8)
 	print(image_np.size)
 
-	plt.figure(figsize=IMAGE_SIZE)
-	plt.imshow(image_copy)
-	plt.show()
-	#plt.savefig('result.png')
+	#plt.figure(figsize=IMAGE_SIZE)
+	#plt.imshow(image_copy)
+	#plt.show()
+	print(type(category_index))
+	print(category_index)	
 	img = Image.fromarray(image_np, 'RGB')
-	#print(img.flags)
+	
 	high,width=img.size
 	print("image size is",high,width)
-	#plt.figure(figsize=IMAGE_SIZE)
-	#img.setflags(write=1)
+	
+	#object_dict={52:"banana",74:"mouse",44:"bottle"}
+	#object_dict.setdefault("nonregist")
+	#print(filtered_dict['detection_classes'])
+	print(output_dict['detection_classes'])
 
-	#plt.imshow(img)
-	#plt.show()
-	print (filtered_dict['detection_boxes'].shape)
-	object_dict={52:"banana",74:"mouse",44:"bottle"}
-	print(filtered_dict['detection_classes'])
-	print(type(filtered_dict['detection_classes']))
+	#print(type(filtered_dict['detection_classes']))
 	string=" "
-	object_list=[object_dict[a] for a in list(filtered_dict['detection_classes'])]
+	#object_list=[object_dict[a] for a in list(filtered_dict['detection_classes'])]
+	object_list=[category_index[a]["name"] for a in list(output_dict['detection_classes'])]
+
 	object_list=string.join(object_list)
 	#print(type(object_list))
 	#object_list=[string.join(a) for a in object_dict[list(filtered_dict['detection_classes'])] ]
 	
 	print(object_list)
-	bbox_data=list(filtered_dict['detection_boxes'])
+	#bbox_data=list(filtered_dict['detection_boxes'])
+	bbox_data=list(output_dict['detection_boxes'])
+
 	#print(bbox_data)
 
 	
-	if (filtered_dict['detection_boxes'].shape[0]!=0):
+	if (output_dict['detection_boxes'].shape[0]!=0):
 		bbox_data_list=[list(a) for a in bbox_data]
 		#print("bbox",bbox_data_list)
 		bbox_data=[]

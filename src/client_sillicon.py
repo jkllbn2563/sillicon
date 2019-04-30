@@ -47,13 +47,13 @@ def face_calculation():
 
 if __name__=='__main__':
 	rospy.init_node('client_node',anonymous=True)
-	rospy.Subscriber("/usb_cam/image_raw",Image,rgb_callback)
+	#rospy.Subscriber("/usb_cam/image_raw",Image,rgb_callback)
 	#rospy.Subscriber("/c1/camera/depth/points",PointCloud2,point_cloud_callback)
-	rospy.wait_for_service('object_detection')
+	#rospy.wait_for_service('object_detection')
 
 	rospy.wait_for_service('emotion_classfication_service')
 	emotion_classfication_client=rospy.ServiceProxy('emotion_classfication_service',emotionRecognition)
-	detection_client=rospy.ServiceProxy('object_detection',objectDetectionV2)
+	#detection_client=rospy.ServiceProxy('object_detection',objectDetectionV2)
 
 
 	rate=rospy.Rate(1)

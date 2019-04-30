@@ -40,11 +40,10 @@ def rgb2gray(rgb):
 
 def handle_function(req):
 	
-
-	#print("fuck")
+	print("fuck")
 	bridge = CvBridge()
-	#image_np = bridge.imgmsg_to_cv2(req.face, desired_encoding="passthrough")
-	image_np = bridge.imgmsg_to_cv2(req.face, "rgb8")
+	image_np = bridge.imgmsg_to_cv2(req.face, desired_encoding="passthrough")
+	#image_np = bridge.imgmsg_to_cv2(req.face, "rgb8")
 	#print("apple")
 	
 	#print("bbanana")
@@ -63,14 +62,7 @@ def handle_function(req):
 	inputs = transform_test(img)
 
 
-	class_names = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
-
-	net = VGG('VGG19')
-	checkpoint = torch.load(os.path.join('FER2013_VGG19', 'PrivateTest_model.t7'),map_location=lambda storage,loc:storage)#for cpu
-	net.load_state_dict(checkpoint['net'])
-	#net.cuda()#if you want to use gpu
-	net.eval()
-
+	
 	ncrops, c, h, w = np.shape(inputs)
 
 	inputs = inputs.view(-1, c, h, w)
@@ -83,46 +75,55 @@ def handle_function(req):
 	score = F.softmax(outputs_avg)
 	_, predicted = torch.max(outputs_avg.data, 0)
 
-	plt.rcParams['figure.figsize'] = (13.5,5.5)
-	axes=plt.subplot(1, 3, 1)
+	#plt.rcParams['figure.figsize'] = (13.5,5.5)
+	#axes=plt.subplot(1, 3, 1)
 	#plt.imshow(raw_img)
-	plt.xlabel('Input Image', fontsize=16)
-	axes.set_xticks([])
-	axes.set_yticks([])
-	plt.tight_layout()
+	#plt.xlabel('Input Image', fontsize=16)
+	#axes.set_xticks([])
+	#axes.set_yticks([])
+	#plt.tight_layout()
 
 
-	plt.subplots_adjust(left=0.05, bottom=0.2, right=0.95, top=0.9, hspace=0.02, wspace=0.3)
+	#plt.subplots_adjust(left=0.05, bottom=0.2, right=0.95, top=0.9, hspace=0.02, wspace=0.3)
 
-	plt.subplot(1, 3, 2)
+	#plt.subplot(1, 3, 2)
 	ind = 0.1+0.6*np.arange(len(class_names))    # the x locations for the groups
 	width = 0.4       # the width of the bars: can also be len(x) sequence
 	color_list = ['red','orangered','darkorange','limegreen','darkgreen','royalblue','navy']
+	"""
 	for i in range(len(class_names)):
 	    plt.bar(ind[i], score.data.cpu().numpy()[i], width, color=color_list[i])
 	plt.title("Classification results ",fontsize=20)
 	plt.xlabel(" Expression Category ",fontsize=16)
 	plt.ylabel(" Classification Score ",fontsize=16)
 	plt.xticks(ind, class_names, rotation=45, fontsize=14)
-
-	axes=plt.subplot(1, 3, 3)
+	"""
+	#axes=plt.subplot(1, 3, 3)
 	emojis_img = io.imread('images/emojis/%s.png' % str(class_names[int(predicted.cpu().numpy())]))
-	plt.imshow(emojis_img)
-	plt.xlabel('Emoji Expression', fontsize=16)
-	axes.set_xticks([])
-	axes.set_yticks([])
-	plt.tight_layout()
+	#plt.imshow(emojis_img)
+	#plt.xlabel('Emoji Expression', fontsize=16)
+	#axes.set_xticks([])
+	#axes.set_yticks([])
+	#plt.tight_layout()
 	# show emojis
 
 	#plt.show()
-	plt.savefig(os.path.join('images/results/l.png'))
-	plt.close()
+	#plt.savefig(os.path.join('images/results/l.png'))
+	#plt.close()
 
 	print("The Expression is %s" %str(class_names[int(predicted.cpu().numpy())]))
 	return str(class_names[int(predicted.cpu().numpy())])
 	  
 
 if __name__== '__main__':
+	class_names = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
+
+	net = VGG('VGG19')
+	checkpoint = torch.load(os.path.join('FER2013_VGG19', 'PrivateTest_model.t7'),map_location=lambda storage,loc:storage)#for cpu
+	net.load_state_dict(checkpoint['net'])
+	#net.cuda()#if you want to use gpu
+	net.eval()
+	#print("hi")
 	server_srv()
 
 
