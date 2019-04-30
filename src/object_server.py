@@ -165,7 +165,7 @@ def handle_function(req):
 	#plt.imshow(image_copy)
 	#plt.show()
 	print(type(category_index))
-	print(category_index)	
+	#print(category_index)	
 	img = Image.fromarray(image_np, 'RGB')
 	
 	high,width=img.size
