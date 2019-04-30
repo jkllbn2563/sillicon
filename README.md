@@ -27,3 +27,11 @@ vis_util.visualize_boxes_and_labels_on_image_array(
 	  line_thickness=8)
 )
 ```
+### object_detection(This si the code for finetune model to replace the label_map)
+```
+NUM_CLASSES=90
+	label_map= label_map_util.load_labelmap(PATH_TO_LABELS)
+	categories=label_map_util.convert_label_map_to_categories(label_map,max_num_classes=NUM_CLASSES, use_display_name=True)
+	category_index = label_map_util.create_category_index(categories)
+	IMAGE_SIZE = (12, 8)
+```
